@@ -1,0 +1,68 @@
+$gold: #A08600;
+$faded-gold: #7b6c24;
+$dark-gold: #2b2508;
+$background: black;
+$bright-gold: #d9bb26;
+
+.lead {
+	color: $bright-gold;
+}
+
+.padded-icon {
+	padding-right: 5px;
+}
+
+a.btn-primary {
+	background-color: $gold;
+	border-color: $gold;
+	color: $background;
+	&:hover {
+		border-color: $bright-gold;
+		background-color: $bright-gold;
+		color: white;
+	}
+	&.disabled {
+		border-color: $dark-gold;
+		background-color: $dark-gold;
+		color: white;
+	}
+}
+a.btn-secondary {
+	background-color: $background;
+	border-color: $gold;
+	color: $gold;
+	&:hover {
+		border-color: $gold;
+		background-color: $dark-gold;
+		color: $bright-gold;
+	}
+}
+
+body {
+	background-color: $background;
+	color: $gold;
+}
+
+hr {
+	border-top-color: #aaa;
+}
+
+.jumbotron {
+	background-color: $background;
+}
+
+.bg-primary {
+	color: $background;
+}
+
+#topNav {
+	background-color: $background;
+}
+
+.btn {
+	letter-spacing: 1px;
+}
+
+.text-muted {
+	color: #444444 !important;
+}
