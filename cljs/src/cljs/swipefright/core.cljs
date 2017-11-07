@@ -297,15 +297,19 @@
   ;;)
 
 (defn format-post [info]
-  [:div.container
+  [:div.container.text-center
    [:h3 (:title info)]
-   [:h5 (str info)]])
+   [:h5 (:caption info)]
+   [:div
+    [:img.text-message-image
+     {:src (str "images/posts/" (:image  (first (:images info))))}]]
+   [:h3 "end"]])
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
     (format-post  {:title (:title parsed)
                    :caption (:caption parsed)
-                   :body (:body parsed)}))
+                   :images (:images parsed)}))
   ;;(str json)
   )
 
@@ -321,7 +325,8 @@
                (parse-post json)))))
   nil)
 
-(swap! app-state assoc :jumbotron (fetch-post "E"))
+;;(swap! app-state assoc :jumbotron (fetch-post "E"))
+(swap! app-state assoc :jumbotron (jumbotron))
 
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]

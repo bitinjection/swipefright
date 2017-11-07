@@ -48,4 +48,8 @@ hr {
 .text-muted {
   color: #444444 !important; }
 
+.text-message-image {
+  width: 50%;
+  height: 50%; }
+
 /*# sourceMappingURL=swipefright.css.map */
