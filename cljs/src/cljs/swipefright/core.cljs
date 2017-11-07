@@ -12,7 +12,6 @@
             [swipefright.validation :as validation]) 
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-;;(def api-url "http://www.swipefright.net:8880/api/")
 (def api-url "http://localhost:4000/api/")
 
 (def app-state 
@@ -56,15 +55,19 @@
 
 
 (defn subscribe-confirmed-modal []
-  (letfn [(subscribed-body [] [:div "Thanks!  We'll notify you when we're up and running!"]) ]
+  (letfn [(subscribed-body [] 
+            [:div "Thanks!  We'll notify you when we're up and running!"])]
     [:div
      (create-modal-header "Thanks")
      (create-modal-body "fa-thumbs-up" "Subscribed" subscribed-body)]))
 
 (defn save-email [email]
-  (go (let [response (<! (http/post (str api-url "emails")
-                         {:with-credentials? false 
-                         :json-params {:email {:email (get-in @app-state [:landing :notify-email])}}}))]
+  (go (let [response 
+            (<! (http/post 
+                  (str api-url "emails")
+                  {:with-credentials? false 
+                   :json-params 
+                   {:email {:email (get-in @app-state [:landing :notify-email])}}}))]
         (modal/modal! (subscribe-confirmed-modal)))))
 
 (defn validate-email-on-enter [event]
@@ -191,7 +194,6 @@
         [:i.fa.fa-superpowers {:style {:padding-right "5px"}}]
         "Enter"]]]]]])
 
-
 (defn menu-item [text icon]
   [:li.text-center 
    [:a.btn.btn-secondary {:href "#"} 
@@ -236,10 +238,7 @@
    [:footer.footer.text-center
     [:div.container
      [:div.text-muted
-      "This site should not be viewed by users with a history of heart problems."]
-     ]]]
-  
-  ) 
+      "This site should not be viewed by users with a history of heart problems."]]]]) 
 
 (defn dropdown-menu-example [] 
   [:ul.nav.navbar-nav
@@ -278,24 +277,6 @@
 (secretary/defroute "/" []
   (reset! page #'home-page))
 
-(secretary/defroute "/about" []
-  (reset! page #'about-page))
-
-(secretary/defroute "/upload" []
-  (reset! page #'upload-page))
-
-(secretary/defroute "/d" [id]
-  (reset! page #'upload-page))
-
-(secretary/defroute "/test" [id]
-  (reset! page #'upload-page))
-
-(secretary/defroute "/users/:id" [id]
-  (reset! page #'upload-page))
-
-;;(defn save-email [email]
-  ;;)
-
 (defn format-post [info]
   [:div.container.text-center
    [:h3 (:title info)]
@@ -309,9 +290,7 @@
   (let [parsed (get-in json [:body :data])]
     (format-post  {:title (:title parsed)
                    :caption (:caption parsed)
-                   :images (:images parsed)}))
-  ;;(str json)
-  )
+                   :images (:images parsed)})))
 
 (defn fetch-post [id]
   (go 
