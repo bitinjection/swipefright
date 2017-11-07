@@ -4,9 +4,9 @@ defmodule ApiWeb.ImageControllerTest do
   alias Api.Content
   alias Api.Content.Image
 
-  @create_attrs %{image: "some image", post_id: 42, sequence: 42, thumbnail: "some thumbnail"}
-  @update_attrs %{image: "some updated image", post_id: 43, sequence: 43, thumbnail: "some updated thumbnail"}
-  @invalid_attrs %{image: nil, post_id: nil, sequence: nil, thumbnail: nil}
+  @create_attrs %{image: "some image", sequence: 42, thumbnail: "some thumbnail"}
+  @update_attrs %{image: "some updated image", sequence: 43, thumbnail: "some updated thumbnail"}
+  @invalid_attrs %{image: nil, sequence: nil, thumbnail: nil}
 
   def fixture(:image) do
     {:ok, image} = Content.create_image(@create_attrs)
@@ -33,7 +33,6 @@ defmodule ApiWeb.ImageControllerTest do
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "image" => "some image",
-        "post_id" => 42,
         "sequence" => 42,
         "thumbnail" => "some thumbnail"}
     end
@@ -55,7 +54,6 @@ defmodule ApiWeb.ImageControllerTest do
       assert json_response(conn, 200)["data"] == %{
         "id" => id,
         "image" => "some updated image",
-        "post_id" => 43,
         "sequence" => 43,
         "thumbnail" => "some updated thumbnail"}
     end

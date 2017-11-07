@@ -6,15 +6,16 @@ defmodule Api.Content.Image do
 
   schema "images" do
     field :image, :string
-    field :post_id, :integer
     field :sequence, :integer
     field :thumbnail, :string
+    field :post_id, :id
+
   end
 
   @doc false
   def changeset(%Image{} = image, attrs) do
     image
-    |> cast(attrs, [:image, :thumbnail, :sequence, :post_id])
-    |> validate_required([:image, :thumbnail, :sequence, :post_id])
+    |> cast(attrs, [:image, :thumbnail, :sequence])
+    |> validate_required([:image, :thumbnail, :sequence])
   end
 end

@@ -35,7 +35,10 @@ defmodule Api.Content do
       ** (Ecto.NoResultsError)
 
   """
-  def get_post!(id), do: Repo.get!(Post, id)
+  def get_post!(id) do
+    post = Repo.get!(Post, id)
+    Repo.preload(post, :images)
+  end
 
   @doc """
   Creates a post.

@@ -14,7 +14,6 @@ defmodule ApiWeb.ImageView do
     %{id: image.id,
       image: image.image,
       thumbnail: image.thumbnail,
-      sequence: image.sequence,
-      post_id: image.post_id}
+      sequence: image.sequence}
   end
 end

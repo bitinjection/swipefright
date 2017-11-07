@@ -13,6 +13,7 @@ defmodule ApiWeb.PostView do
   def render("post.json", %{post: post}) do
     %{id: post.id,
       title: post.title,
-      caption: post.caption}
+      caption: post.caption,
+      images: render_many(post.images, ApiWeb.ImageView, "image.json")}
   end
 end
