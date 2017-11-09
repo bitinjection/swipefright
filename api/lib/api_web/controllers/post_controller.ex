@@ -25,6 +25,11 @@ defmodule ApiWeb.PostController do
     render(conn, "show.json", post: post)
   end
 
+  def get_post_count(conn, %{}) do
+    total = Content.get_total_posts()
+    render(conn, "show.json", total: total)
+  end
+
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Content.get_post!(id)
 

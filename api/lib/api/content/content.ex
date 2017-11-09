@@ -27,7 +27,7 @@ defmodule Api.Content do
   Raises `Ecto.NoResultsError` if the Post does not exist.
 
   ## Examples
-
+Examples
       iex> get_post!(123)
       %Post{}
 
@@ -38,6 +38,10 @@ defmodule Api.Content do
   def get_post!(id) do
     post = Repo.get!(Post, id)
     Repo.preload(post, :images)
+  end
+
+  def get_total_posts() do
+    Repo.one(from p in Post, select: count("*"))
   end
 
   @doc """

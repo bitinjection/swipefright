@@ -61,6 +61,8 @@
      (create-modal-header "Thanks")
      (create-modal-body "fa-thumbs-up" "Subscribed" subscribed-body)]))
 
+
+
 (defn save-email [email]
   (go (let [response 
             (<! (http/post 
@@ -291,6 +293,15 @@
     (format-post  {:title (:title parsed)
                    :caption (:caption parsed)
                    :images (:images parsed)})))
+
+(defn random-post []
+  (go (let [total (<! (http/get 
+                        (str api-url "posts/count") {:with-credentials? false} ))
+          post (<! (http/get
+                     (str api-url "posts/C")))]
+        (swap! app-state assoc :jumbotron (str "Got " total " posts and picked " post))))
+  nil
+  )
 
 (defn fetch-post [id]
   (go 

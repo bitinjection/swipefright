@@ -9,6 +9,7 @@ defmodule ApiWeb.Router do
   scope "/api", ApiWeb do
     pipe_through :api
 
+    get "/posts/count", PostController, :get_post_count
     resources "/posts", PostController, only: [:show]
     resources "/images", ImageController, only: [:show]
   end
