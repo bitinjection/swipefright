@@ -44,6 +44,15 @@ Examples
     Repo.one(from p in Post, select: count("*"))
   end
 
+  def get_random_post() do
+    query = Ecto.Adapters.SQL.query!(
+      Repo,
+      "SELECT id FROM posts ORDER BY RANDOM() LIMIT 1",
+      [])
+    %Postgrex.Result{rows: [[id]]} = query
+    id
+  end
+
   @doc """
   Creates a post.
 

@@ -294,15 +294,6 @@
                    :caption (:caption parsed)
                    :images (:images parsed)})))
 
-(defn random-post []
-  (go (let [total (<! (http/get 
-                        (str api-url "posts/count") {:with-credentials? false} ))
-          post (<! (http/get
-                     (str api-url "posts/C")))]
-        (swap! app-state assoc :jumbotron (str "Got " total " posts and picked " post))))
-  nil
-  )
-
 (defn fetch-post [id]
   (go 
     (let [response (<! (http/get (str api-url "posts/" (url/decode52 id))
@@ -313,6 +304,13 @@
           (str "Unable to fetch post. " response)) 
         (swap! app-state assoc-in [:jumbotron] 
                (parse-post json)))))
+  nil)
+
+(defn random-post []
+  (go (let [total (get-in (<! (http/get 
+                          (str api-url "posts/count") {:with-credentials? false} ))
+                          [:body :data :total])]
+        (fetch-post (url/encode52 (rand-int total)))))
   nil)
 
 ;;(swap! app-state assoc :jumbotron (fetch-post "E"))
