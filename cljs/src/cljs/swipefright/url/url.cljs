@@ -1,4 +1,5 @@
-(ns swipefright.url)
+(ns swipefright.url
+  (:require [clojure.spec.alpha :as s]))
 
 (def translation-table
   {"A" 0 "B" 1 "C" 2 "D" 3 "E" 4 "F" 5 "G" 6 "H" 7 "I" 8 "J" 9
@@ -27,7 +28,15 @@
       (conj r n)
       (recur (conj r (mod n b)) (quot n b)))))
 
+(s/def ::natural (s/and int? pos?))
+
+(s/fdef encode52
+    :args (s/cat :n ::natural)
+    :ret string?)
+
 (defn encode52 [n]
+  {:pre [(s/valid? ::natural n)]
+   :post [(s/valid? string? %)]}
   (->> (convert-to-base n 52)
         (map #(get (clojure.set.map-invert translation-table) %))
         (reduce #(str %1 %2))))

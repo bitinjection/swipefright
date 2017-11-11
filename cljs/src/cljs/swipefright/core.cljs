@@ -14,10 +14,9 @@
 
 (def api-url "http://localhost:4000/api/")
 
-(def app-state 
+(defonce app-state 
   (reagent/atom 
     {
-     :jumbotron nil
      :content 
      {:body [:div "empty"]} 
      :menu-classes "navbar-collapse text-center collapse"
@@ -176,7 +175,6 @@
       {:style  {:letter-spacing "2px" :text-transform "uppercase"}} 
       "The Swipe Rights That Haunt Your Nights" ]]
     [:br]
-    ;;[:hr.my-4]
     [:div.row
      [:div.col-xs-12.col-lg-8.mb-5 {:style {:display "flex" :align-items "center"}}
       [:div
@@ -196,97 +194,14 @@
         [:i.fa.fa-superpowers {:style {:padding-right "5px"}}]
         "Enter"]]]]]])
 
-(defn menu-item [text icon]
-  [:li.text-center 
-   [:a.btn.btn-secondary {:href "#"} 
-    [:i.padded-icon {:class (str "fa " icon)}]
-     text]])
-
-(defn submit-button []
-  [:li {:on-click #(session/put! :current-page #'upload-page) }
-   [:a.btn.btn-secondary {:href "#"}
-    [:i.fa.fa-cloud-upload.padded-icon ]
-    "Submit"]])
-
-(defn nav-menus []
-  [:ul.nav.navbar-nav.navbar-right
-   ;;(menu-item "Random" "fa-random")
-   (submit-button)])
-
-(defn toggle-class [a k class1 class2]
-  (if (= (@a k) class1)
-    (swap! a assoc k class2)
-    (swap! a assoc k class1)))
-
-(defn right-button []
-  (fn []
-    [:div {:class (get @app-state :menu-classes)} 
-     [:ul {:class "nav navbar-nav ml-auto"}
-      (submit-button)]]))
-
-(defn home-page []
-  [:div
-   [:nav {:id "topNav", :class "navbar navbar-expand-sm navbar-dark"}
-    [:button.navbar-toggler.navbar-toggler-right
-     {:type "button", :data-toggle "collapse", :data-target ".navbar-collapse" }
-     [:i {:class "fa fa-bars"} ]]
-    [:div {:class "navbar-collapse collapse"}
-     [:ul {:class "nav navbar-nav"}
-      (menu-item "Random" "fa-random")]]
-    [:a {:class "navbar-brand mx-auto w-100 text-center", :href "#"}
-     [:img.img-fluid {:src "images/sflogov2.svg"}]]
-    [right-button]]
-   (get @app-state :jumbotron)
-   [:footer.footer.text-center
-    [:div.container
-     [:div.text-muted
-      "This site should not be viewed by users with a history of heart problems."]]]]) 
-
-(defn dropdown-menu-example [] 
-  [:ul.nav.navbar-nav
-   [:li {:class "dropdown"}
-    [:a.dropdown-toggle 
-     {:href "#",
-      :data-toggle "dropdown", 
-      :role "button", 
-      :aria-haspopup "true", 
-      :aria-expanded "false"} 
-     "Dropdown " 
-     [:span.caret]]
-    [:ul.dropdown-menu 
-     (menu-item "Action" "fa-search")
-     (menu-item "Another action" "fa-search")
-     (menu-item "Something else here" "fa-search")
-     [:li.divider {:role "separator"}]
-     [:li.dropdown-header "Nav header"]
-     (menu-item "Separated link" "fa-search")
-     (menu-item "One more separated link" "fa-search")]]])
-
-(defn about-page []
-  [:div [:h1 "About swipefright"]
-   [:div {:dude "whoa" } [:a {:href "/" :role "button"} "go to the home page"]]])
-
-(def page (atom #'home-page))
-
-(defn current-page []
-  [:div [@page]
-  [modal/modal-window]])
-
-;; -------------------------
-;; Routes
-
-
-(secretary/defroute "/" []
-  (reset! page #'home-page))
-
 (defn format-post [info]
   [:div.container.text-center
-   [:h3 (:title info)]
-   [:h5 (:caption info)]
+   [:div.post-title
+    [:h3 (:title info)]
+    [:h6 (str  (:caption info) "!?")]]
    [:div
     [:img.text-message-image
-     {:src (str "images/posts/" (:image  (first (:images info))))}]]
-   [:h3 "end"]])
+     {:src (str "images/posts/" (:image (first (:images info))))}]]])
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
@@ -313,8 +228,71 @@
         (fetch-post (url/encode52 (rand-int total)))))
   nil)
 
+(defn submit-button []
+  [:li {:on-click #(random-post) }
+   [:a.btn.btn-secondary
+    [:i.fa.fa-cloud-upload.padded-icon ]
+    "Submit"]])
+
+(defn nav-menus []
+  [:ul.nav.navbar-nav.navbar-right
+   ;;(menu-item "Random" "fa-random")
+   (submit-button)])
+
+(defn toggle-class [a k class1 class2]
+  (if (= (@a k) class1)
+    (swap! a assoc k class2)
+    (swap! a assoc k class1)))
+
+(defn right-button []
+  (fn []
+    [:div {:class (get @app-state :menu-classes)} 
+     [:ul.nav.navbar-nav.ml-auto
+      (submit-button)]]))
+
+(defn home-page []
+  [:div
+   [:nav.navbar.navbar-expand-sm.navbar-dark {:id "topNav"}
+    [:button.navbar-toggler.navbar-toggler-right
+     {:type "button", :data-toggle "collapse", :data-target ".navbar-collapse" }
+     [:i.fa.fa-bars]]
+    [:div.navbar-collapse.collapse 
+     [:ul.nav.navbar-nav
+      [:li.text-center 
+       [:a.btn.btn-secondary
+        {:href "#"
+         :on-click #(random-post)
+         } 
+        [:i.padded-icon.fa.fa-random]
+        "Random"]]]]
+    [:a.navbar-brand.mx-auto.w-100.text-center 
+     [:img.img-fluid {:src "images/sflogov2.svg"}]]
+    [right-button]]
+   (get @app-state :jumbotron)
+   [:footer.footer.text-center
+    [:div.container
+     [:div.text-muted
+      "This site should not be viewed by users with a history of heart problems."]]]]) 
+
+(defn about-page []
+  [:div [:h1 "About swipefright"]
+   [:div {:dude "whoa" } [:a {:href "/" :role "button"} "go to the home page"]]])
+
+(def page (atom #'home-page))
+
+(defn current-page []
+  [:div [@page]
+  [modal/modal-window]])
+
+;; -------------------------
+;; Routes
+
+
+
+(secretary/defroute "/" []
+  (reset! page #'home-page))
+
 ;;(swap! app-state assoc :jumbotron (fetch-post "E"))
-(swap! app-state assoc :jumbotron (jumbotron))
 
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]
