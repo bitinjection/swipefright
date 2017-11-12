@@ -14,6 +14,14 @@ defmodule ApiWeb.PostView do
     %{data: render_one(total, PostView, "count.json", as: :total)}
   end
 
+  def render("show.json", %{id: id}) do
+    %{data: render_one(id, PostView, "id.json", as: :id)}
+  end
+
+  def render("id.json", %{id: id}) do
+    %{id: id}
+  end
+
   def render("count.json", %{total: total}) do
     %{total: total}
   end

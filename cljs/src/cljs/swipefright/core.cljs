@@ -17,6 +17,8 @@
 (defonce app-state 
   (reagent/atom 
     {
+     :jumbotron :jumbotron
+     :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
      :content 
      {:body [:div "empty"]} 
      :menu-classes "navbar-collapse text-center collapse"
@@ -197,17 +199,26 @@
 (defn format-post [info]
   [:div.container.text-center
    [:div.post-title
-    [:h3 (:title info)]
-    [:h6 (str  (:caption info) "!?")]]
-   [:div
-    [:img.text-message-image
-     {:src (str "images/posts/" (:image (first (:images info))))}]]])
+    [:h3 (get-in @app-state [:post :title])]
+    [:h6 (get-in @app-state [:post :caption])]]
+   [:div.post
+    [:img 
+     {:src (str "images/posts/" (:image
+                                  (first
+                                    (get-in @app-state [:post :images]))))
+      :class (get-in @app-state [:post :class])
+      }]]])
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
-    (format-post  {:title (:title parsed)
-                   :caption (:caption parsed)
-                   :images (:images parsed)})))
+    (swap!
+      app-state
+      assoc
+      :post
+      {:title (:title parsed)
+       :caption (:caption parsed)
+       :images (:images parsed)
+       :class "post-image"})))
 
 (defn fetch-post [id]
   (go 
@@ -215,22 +226,26 @@
                                    {:with-credentials? false}))
           json (js->clj response)]
       (if (not (:success json))
-        (swap!  app-state assoc-in [:jumbotron] 
-          (str "Unable to fetch post. " response)) 
-        (swap! app-state assoc-in [:jumbotron] 
-               (parse-post json)))))
+        (str "Unable to fetch post. " response)
+        (parse-post json))))
   nil)
 
 (defn random-post []
-  (go (let [total (get-in (<! (http/get 
-                          (str api-url "posts/count") {:with-credentials? false} ))
-                          [:body :data :total])]
-        (fetch-post (url/encode52 (rand-int total)))))
+  (go (let [id (get-in (<! (http/get
+                                (str api-url "posts/random")
+                                {:with-credentials? false}))
+                          [:body :data :id])]
+        (swap! app-state
+               assoc
+               :post
+               {:title nil :caption nil :images [{ :image "loading.gif"}] :class "post-loading"})
+        (swap! app-state assoc :jumbotron :post)
+        (fetch-post (url/encode52 id))))
   nil)
 
 (defn submit-button []
-  [:li {:on-click #(random-post) }
-   [:a.btn.btn-secondary
+  [:li 
+   [:a.btn.btn-secondary.disabled
     [:i.fa.fa-cloud-upload.padded-icon ]
     "Submit"]])
 
@@ -266,12 +281,17 @@
         [:i.padded-icon.fa.fa-random]
         "Random"]]]]
     [:a.navbar-brand.mx-auto.w-100.text-center 
-     [:img.img-fluid {:src "images/sflogov2.svg"}]]
+     [:img.img-fluid 
+      {:on-click #(swap! app-state assoc :jumbotron :jumbotron)
+       :src "images/sflogov2.svg"}]]
     [right-button]]
-   (get @app-state :jumbotron)
+   (if (= :jumbotron (get @app-state :jumbotron))
+     (jumbotron)
+     (format-post nil))
+   
    [:footer.footer.text-center
     [:div.container
-     [:div.text-muted
+     [:div.text-muted.footer-text
       "This site should not be viewed by users with a history of heart problems."]]]]) 
 
 (defn about-page []

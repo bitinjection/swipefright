@@ -30,6 +30,10 @@ defmodule ApiWeb.PostController do
     render(conn, "show.json", total: total)
   end
 
+  def get_random_post(conn, %{}) do
+    render(conn, "show.json", id: Content.get_random_post())
+  end
+
   def update(conn, %{"id" => id, "post" => post_params}) do
     post = Content.get_post!(id)
 

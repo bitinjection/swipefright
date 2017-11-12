@@ -1,6 +1,7 @@
 $gold: #A08600;
 $faded-gold: #7b6c24;
-$dark-gold: #2b2508;
+//$dark-gold: #2b2508;
+$dark-gold: #6d6758;
 $background: black;
 $bright-gold: #d9bb26;
 
@@ -36,6 +37,11 @@ a.btn-secondary {
 		background-color: $dark-gold;
 		color: $bright-gold;
 	}
+	&.disabled {
+		border-color: $dark-gold;
+		background-color: black;
+		color: $dark-gold;
+	}
 }
 
 body {
@@ -67,12 +73,25 @@ hr {
 	color: #444444 !important;
 }
 
-.text-message-image {
+.post {
+	min-height: 700px;
+}
+
+.post-image {
 	width: 50%;
 	height: 50%;
+}
+
+.post-loading {
+	margin-top: 150px;
+	width: 10%;
 }
 
 .post-title {
 	margin-top: 50px;
 	margin-bottom: 25px;
+}
+
+.footer-text {
+	margin-top: 25px
 }

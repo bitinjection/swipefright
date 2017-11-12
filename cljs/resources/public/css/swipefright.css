@@ -13,8 +13,8 @@ a.btn-primary {
     background-color: #d9bb26;
     color: white; }
   a.btn-primary.disabled {
-    border-color: #2b2508;
-    background-color: #2b2508;
+    border-color: #6d6758;
+    background-color: #6d6758;
     color: white; }
 
 a.btn-secondary {
@@ -23,8 +23,12 @@ a.btn-secondary {
   color: #A08600; }
   a.btn-secondary:hover {
     border-color: #A08600;
-    background-color: #2b2508;
+    background-color: #6d6758;
     color: #d9bb26; }
+  a.btn-secondary.disabled {
+    border-color: #6d6758;
+    background-color: black;
+    color: #6d6758; }
 
 body {
   background-color: black;
@@ -48,12 +52,22 @@ hr {
 .text-muted {
   color: #444444 !important; }
 
-.text-message-image {
+.post {
+  min-height: 700px; }
+
+.post-image {
   width: 50%;
   height: 50%; }
+
+.post-loading {
+  margin-top: 150px;
+  width: 10%; }
 
 .post-title {
   margin-top: 50px;
   margin-bottom: 25px; }
+
+.footer-text {
+  margin-top: 25px; }
 
 /*# sourceMappingURL=swipefright.css.map */
