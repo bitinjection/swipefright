@@ -10,6 +10,10 @@
             [cljsjs.react-transition-group :as transition] 
             [swipefright.url :as url]
             [swipefright.validation :as validation]) 
+  (:import
+    [goog.history Html5History EventType]
+    [goog Uri]
+    )
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def api-url "http://localhost:4000/api/")
@@ -203,9 +207,9 @@
     [:h6 (get-in @app-state [:post :caption])]]
    [:div.post
     [:img 
-     {:src (str "images/posts/" (:image
-                                  (first
-                                    (get-in @app-state [:post :images]))))
+     {:src (str "/images/posts/"(:image
+                  (first
+                    (get-in @app-state [:post :images]))))
       :class (get-in @app-state [:post :class])
       }]]])
 
@@ -226,7 +230,6 @@
                                    {:with-credentials? false}))
           json (js->clj response)]
       (if (not (:success json))
-        (str "Unable to fetch post. " response)
         (parse-post json))))
   nil)
 
@@ -235,12 +238,13 @@
                                 (str api-url "posts/random")
                                 {:with-credentials? false}))
                           [:body :data :id])]
+        (accountant/navigate! (str "/p/" (url/encode52 id)))
         (swap! app-state
                assoc
                :post
                {:title nil :caption nil :images [{ :image "loading.gif"}] :class "post-loading"})
         (swap! app-state assoc :jumbotron :post)
-        (fetch-post (url/encode52 id))))
+        ))
   nil)
 
 (defn submit-button []
@@ -283,7 +287,7 @@
     [:a.navbar-brand.mx-auto.w-100.text-center 
      [:img.img-fluid 
       {:on-click #(swap! app-state assoc :jumbotron :jumbotron)
-       :src "images/sflogov2.svg"}]]
+       :src "/images/sflogov2.svg"}]]
     [right-button]]
    (if (= :jumbotron (get @app-state :jumbotron))
      (jumbotron)
@@ -307,12 +311,16 @@
 ;; -------------------------
 ;; Routes
 
+(def history (Html5History.))
+(.setUseFragment history false)
+(.setPathPrefix history "")
+(.setEnabled history true)
 
+(defn nav! [token]
+  (. history (setToken "swipefright" token)))
 
 (secretary/defroute "/" []
   (reset! page #'home-page))
-
-;;(swap! app-state assoc :jumbotron (fetch-post "E"))
 
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]
