@@ -77,14 +77,25 @@ hr {
 	min-height: 700px;
 }
 
+@keyframes fadein {
+	from {opacity: 0;}
+	to {opacity: 1;}
+}
+
+
 .post-image {
 	width: 50%;
 	height: 50%;
+	background: transparent url("/images/posts/loading.gif") no-repeat scroll center center;
+	animation-name: fadein;
+	animation-duration: .25s;
 }
 
 .post-loading {
 	margin-top: 150px;
 	width: 10%;
+
+	background: transparent url("/images/posts/loading.gif") no-repeat scroll center center;
 }
 
 .post-title {

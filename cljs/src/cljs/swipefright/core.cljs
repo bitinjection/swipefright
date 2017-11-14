@@ -9,7 +9,9 @@
             [goog.string :as gstring]
             [cljsjs.react-transition-group :as transition] 
             [swipefright.url :as url]
-            [swipefright.validation :as validation]) 
+            [swipefright.validation :as validation]
+            [swipefright.site.core :as site]
+            ) 
   (:import
     [goog.history Html5History EventType]
     [goog Uri]
@@ -31,21 +33,8 @@
       :notify-button-classes "btn btn-primary disabled" } 
      :uploaded-images []}))
 
-(defn large-icon [name]
-  [:div.col-12 [:i.fa.fa-4x {:class name}]])
-
-(defn create-modal-header [title]
-  [:div.modal-header.col-12
-   [:h4.mx-auto title]
-   [:button.close {:type "button" :data-dismiss "modal"}
-    [:span (gstring/unescapeEntities "&times;")]]])
-
-(defn create-modal-body [icon subject body]
-  [:div.modal-body.text-center
-   [:div.row
-   (large-icon icon)
-   [:div.col-12 [:h2 subject ]]]
-   [body]])
+(add-watch app-state :post (fn [a b c d] (pr "post updated")))
+(add-watch app-state :jumbotron (fn [a b c d] (pr "jumbotron updated")))
 
 
 (defn toggle-notify-button [activate]
@@ -58,16 +47,6 @@
     (swap! app-state assoc-in [:landing :notify-email] input)
     (toggle-notify-button (validation/is-valid-email? input))))
 
-
-(defn subscribe-confirmed-modal []
-  (letfn [(subscribed-body [] 
-            [:div "Thanks!  We'll notify you when we're up and running!"])]
-    [:div
-     (create-modal-header "Thanks")
-     (create-modal-body "fa-thumbs-up" "Subscribed" subscribed-body)]))
-
-
-
 (defn save-email [email]
   (go (let [response 
             (<! (http/post 
@@ -75,47 +54,14 @@
                   {:with-credentials? false 
                    :json-params 
                    {:email {:email (get-in @app-state [:landing :notify-email])}}}))]
-        (modal/modal! (subscribe-confirmed-modal)))))
+        (modal/modal! (site/subscribe-confirmed-modal)))))
 
 (defn validate-email-on-enter [event]
   (let [code (.-charCode event)]
     (if (= code 13)
       (validate-email-input event))))
 
-(defn notify-body []
-  (let [button-classes (get-in @app-state [:landing :notify-button-classes])]
-    (fn []
-      [:div
-       [:div
-        [:div (str "SwipeFright is still summoning"
-                   "(we ain't finished making it yet)." )]]
-       [:div
-        [:div (str "If you'd like to be notified when it is ready,"
-                   "enter your email address here." )]
-        [:br]
-        [:div "Follow "
-         [:a
-          {:href "https://twitter.com/swipefright" :target "_blank"}
-          "@swipefright"]]]
-       [:br]
-       [:div 
-        [:div.form-group 
-         [:input.form-control 
-          {:placeholder "email" :type "text"  
-           :on-key-press validate-email-on-enter 
-           :on-change validate-email-input}]]
-        [:div.form-group 
-         [:a 
-          {:class 
-           (get-in @app-state [:landing :notify-button-classes])
-           :on-click save-email 
-           :href "#" }
-          "Notify Me" ]]]])))
 
-(defn subscribe-modal []
-  [:div
-   (create-modal-header "Summoning")
-   (create-modal-body "fa-newspaper-o" "Summoning" (notify-body))])
 
 (def ch (chan))
 
@@ -138,98 +84,42 @@
 (defn upload-queued [e]
   (image-link (first e.target.files)))
 
-(defn image-thumbnails []
-  (fn []
-    (let [images (get-in @app-state [:uploaded-images])]
-      [:div.row 
-       [:div.text-nowrap (map #(identity [:img {:height "100px" :src %}]) images)]])))
+(defn format-post []
+  (let [post-info (get @app-state :post)]
+    (pr "updating html")
+    [:div.container.text-center
+     [:div.post-title
+      [:h3 (:title post-info)]
+      [:h6 (:caption post-info)]]
+     [:div.post
+      [:img 
+       {:src (str
+               "/images/posts/"
+               (-> post-info
+                   :images
+                   first
+                   :image))
+        :class (:class post-info)}]]]))
 
-(defn create-submission-form []
-  [:form
-   [:div.form-group
-    [:h6 "Title: "]
-    [:input {:type "text" :placeholder "Spooky Title"}]]
-   [:div.form-group
-    [:h6 "Images: "]
-    [:div {:style 
-           {:height "100px" :background-color "#333333" :overflow "scroll-x"}} 
-     [image-thumbnails]]]
-   [:div.form-group
-    [:label.btn.btn-primary.btn-file 
-     [:i.fa.fa-superpowers {:style {:padding-right "5px"} }] 
-     "Upload" 
-     [:input.form-control-file 
-      {:style {:display "none"} 
-       :type "file" 
-       :on-change upload-queued}]]]])
-
-(defn submit-image-modal []
-  [:div
-   (create-modal-header "Post Convo")
-   (create-submission-form)])
-
-(defn upload-page []
-  [:div.container.jumbotron 
-   [:div.page-header "Post Convo"] 
-   [:div (create-submission-form)]])
-
-(defn jumbotron []
-  [:div.container 
-   [:div.jumbotron
-    [:div.lead.col-12.text-center
-     [:h5
-      {:style  {:letter-spacing "2px" :text-transform "uppercase"}} 
-      "The Swipe Rights That Haunt Your Nights" ]]
-    [:br]
-    [:div.row
-     [:div.col-xs-12.col-lg-8.mb-5 {:style {:display "flex" :align-items "center"}}
-      [:div
-       [:h5
-        [:ul {:style {:line-height "2.5em"}}
-         [:li "Shall you drink from the cauldron of cringe?"]
-         [:li "Will you be stifled by the self entitled, or hang from the pickup line twine?"]
-         [:li "Do you dare dig into the darkest depths of online dating discourse?"]
-         [:li "Proceed at your own peril!"]]
-        ]]]
-     [:div.col-md-4.text-center [:img {:src "images/logo.png"}]]
-     [:div.row.col-12
-      [:div.text-center.col-12
-       [:hr.my-4]
-       [:a.btn.btn-primary 
-        {:on-click #(modal/modal! (subscribe-modal)) :href "#"}
-        [:i.fa.fa-superpowers {:style {:padding-right "5px"}}]
-        "Enter"]]]]]])
-
-(defn format-post [info]
-  [:div.container.text-center
-   [:div.post-title
-    [:h3 (get-in @app-state [:post :title])]
-    [:h6 (get-in @app-state [:post :caption])]]
-   [:div.post
-    [:img 
-     {:src (str "/images/posts/"(:image
-                  (first
-                    (get-in @app-state [:post :images]))))
-      :class (get-in @app-state [:post :class])
-      }]]])
+(defn post-update [current json]
+  (-> current
+      (assoc :post
+             {:title (:title json)
+              :caption (:caption json)
+              :images (:images json)
+              :class "post-image"})
+      (assoc :jumbotron :post)))
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
-    (swap!
-      app-state
-      assoc
-      :post
-      {:title (:title parsed)
-       :caption (:caption parsed)
-       :images (:images parsed)
-       :class "post-image"})))
+    (swap! app-state post-update parsed)))
 
 (defn fetch-post [id]
   (go 
     (let [response (<! (http/get (str api-url "posts/" (url/decode52 id))
                                    {:with-credentials? false}))
           json (js->clj response)]
-      (if (not (:success json))
+      (if (:success json)
         (parse-post json))))
   nil)
 
@@ -238,14 +128,14 @@
                                 (str api-url "posts/random")
                                 {:with-credentials? false}))
                           [:body :data :id])]
+        
+        ;; This line will trigger the relevant routing function call
         (accountant/navigate! (str "/p/" (url/encode52 id)))
-        (swap! app-state
+        ))
+  (swap! app-state
                assoc
                :post
-               {:title nil :caption nil :images [{ :image "loading.gif"}] :class "post-loading"})
-        (swap! app-state assoc :jumbotron :post)
-        ))
-  nil)
+               {:title nil :caption nil :images [{ :image "loading.gif"}] :class "post-loading"}))
 
 (defn submit-button []
   [:li 
@@ -290,8 +180,8 @@
        :src "/images/sflogov2.svg"}]]
     [right-button]]
    (if (= :jumbotron (get @app-state :jumbotron))
-     (jumbotron)
-     (format-post nil))
+     (site/jumbotron random-post)
+     [format-post])
    
    [:footer.footer.text-center
     [:div.container
