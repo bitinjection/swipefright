@@ -20,31 +20,25 @@
 
 (def api-url "http://localhost:4000/api/")
 
-(defonce app-state 
-  (reagent/atom 
-    {
-     :jumbotron :jumbotron
-     :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
-     :content 
-     {:body [:div "empty"]} 
-     :menu-classes "navbar-collapse text-center collapse"
-     :landing 
-     { :notify-email "testerino!" 
-      :notify-button-classes "btn btn-primary disabled" } 
-     :uploaded-images []}))
-
-(add-watch app-state :post (fn [a b c d] (pr "post updated")))
-(add-watch app-state :jumbotron (fn [a b c d] (pr "jumbotron updated")))
-
+(session/reset!  
+  { :jumbotron :jumbotron
+   :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
+   :content 
+   {:body [:div "empty"]} 
+   :menu-classes "navbar-collapse text-center collapse"
+   :landing 
+   { :notify-email "testerino!" 
+    :notify-button-classes "btn btn-primary disabled" } 
+   :uploaded-images [] })
 
 (defn toggle-notify-button [activate]
   (if (true? activate)
-    (swap! app-state assoc-in [:landing :notify-button-classes] "btn btn-primary")
-    (swap! app-state assoc-in [:landing :notify-button-classes] "btn btn-primary disabled")))
+    (session/swap! assoc-in [:landing :notify-button-classes] "btn btn-primary")
+    (session/swap! assoc-in [:landing :notify-button-classes] "btn btn-primary disabled")))
 
 (defn validate-email-input [e]
   (let [input (.-target.value e)]
-    (swap! app-state assoc-in [:landing :notify-email] input)
+    (session/swap! assoc-in [:landing :notify-email] input)
     (toggle-notify-button (validation/is-valid-email? input))))
 
 (defn save-email [email]
@@ -53,7 +47,7 @@
                   (str api-url "emails")
                   {:with-credentials? false 
                    :json-params 
-                   {:email {:email (get-in @app-state [:landing :notify-email])}}}))]
+                   {:email {:email (session/get-in [:landing :notify-email])}}}))]
         (modal/modal! (site/subscribe-confirmed-modal)))))
 
 (defn validate-email-on-enter [event]
@@ -74,7 +68,7 @@
         (put! ch e)))
     (go
       (let [e (<! ch)]
-        (swap! app-state update-in [:uploaded-images] conj (.-target.result e)))) 
+        (session/swap! update-in [:uploaded-images] conj (.-target.result e)))) 
     (.readAsDataURL reader file)))
 
 (extend-type js/FileList
@@ -85,8 +79,7 @@
   (image-link (first e.target.files)))
 
 (defn format-post []
-  (let [post-info (get @app-state :post)]
-    (pr "updating html")
+  (let [post-info (session/get :post)]
     [:div.container.text-center
      [:div.post-title
       [:h3 (:title post-info)]
@@ -112,7 +105,7 @@
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
-    (swap! app-state post-update parsed)))
+    (session/swap! post-update parsed)))
 
 (defn fetch-post [id]
   (go 
@@ -132,10 +125,12 @@
         ;; This line will trigger the relevant routing function call
         (accountant/navigate! (str "/p/" (url/encode52 id)))
         ))
-  (swap! app-state
-               assoc
-               :post
-               {:title nil :caption nil :images [{ :image "loading.gif"}] :class "post-loading"}))
+  (session/swap!  assoc
+                 :post
+                 {:title nil
+                  :caption nil
+                  :images [{ :image "loading.gif"}]
+                  :class "post-loading"}))
 
 (defn submit-button []
   [:li 
@@ -155,7 +150,7 @@
 
 (defn right-button []
   (fn []
-    [:div {:class (get @app-state :menu-classes)} 
+    [:div {:class (session/get :menu-classes)} 
      [:ul.nav.navbar-nav.ml-auto
       (submit-button)]]))
 
@@ -176,10 +171,10 @@
         "Random"]]]]
     [:a.navbar-brand.mx-auto.w-100.text-center 
      [:img.img-fluid 
-      {:on-click #(swap! app-state assoc :jumbotron :jumbotron)
+      {:on-click #(session/swap! assoc :jumbotron :jumbotron)
        :src "/images/sflogov2.svg"}]]
     [right-button]]
-   (if (= :jumbotron (get @app-state :jumbotron))
+   (if (= :jumbotron (session/get :jumbotron))
      (site/jumbotron random-post)
      [format-post])
    
