@@ -1,11 +1,69 @@
 (ns swipefright.site.core
-  
-  (:require  [reagent-modals.modals :as modal]
-            [goog.string :as gstring]
-            
-            ) 
-  )
+  (:require [reagent-modals.modals :as modal]
+            [swipefright.controllers.index :as controllers]
+            [reagent.session :as session]
+            [goog.string :as gstring]))
 
+(defn submit-button []
+  [:li 
+   [:a.btn.btn-secondary.disabled
+    [:i.fa.fa-cloud-upload.padded-icon ]
+    "Submit"]])
+
+(defn nav-menus []
+  [:ul.nav.navbar-nav.navbar-right
+   ;;(menu-item "Random" "fa-random")
+   (submit-button)])
+
+(defn toggle-class [a k class1 class2]
+  (if (= (@a k) class1)
+    (swap! a assoc k class2)
+    (swap! a assoc k class1)))
+
+(defn right-button []
+  (fn []
+    [:div {:class (get @app-state :menu-classes)} 
+     [:ul.nav.navbar-nav.ml-auto
+      (submit-button)]]))
+
+(defn about-page []
+  [:div [:h1 "About swipefright"]
+   [:div {:dude "whoa" } [:a {:href "/" :role "button"} "go to the home page"]]])
+
+(defn home-page []
+  [:div
+   [:nav.navbar.navbar-expand-sm.navbar-dark {:id "topNav"}
+    [:button.navbar-toggler.navbar-toggler-right
+     {:type "button", :data-toggle "collapse", :data-target ".navbar-collapse" }
+     [:i.fa.fa-bars]]
+    [:div.navbar-collapse.collapse 
+     [:ul.nav.navbar-nav
+      [:li.text-center 
+       [:a.btn.btn-secondary
+        {:href "#"
+         :on-click #(controllers/random-post)
+         } 
+        [:i.padded-icon.fa.fa-random]
+        "Random"]]]]
+    [:a.navbar-brand.mx-auto.w-100.text-center 
+     [:img.img-fluid 
+      {:on-click #(session/swap! assoc :jumbotron :jumbotron)
+       :src "/images/sflogov2.svg"}]]
+    [right-button]]
+   (if (= :jumbotron (session/get :jumbotron))
+     (site/jumbotron controllers/random-post)
+     [format-post])
+
+
+   [:footer.footer.text-center
+    [:div.container
+     [:div.text-muted.footer-text
+      "This site should not be viewed by users with a history of heart problems."]]]]) 
+
+(defn toggle-class [a k class1 class2]
+  (if (= (@a k) class1)
+    (swap! a assoc k class2)
+    (swap! a assoc k class1)))
 (defn large-icon [name]
   [:div.col-12 [:i.fa.fa-4x {:class name}]])
 
@@ -18,8 +76,8 @@
 
 ;; FIXME: Old subscribe modal that nobody used, probably remove
 (defn notify-body []
-  ;;(let [button-classes (get-in @app-state [:landing :notify-button-classes])]
-  (let [button-classes nil]
+  (let [button-classes (session/get-in [:landing :notify-button-classes])]
+  ;;(let [button-classes nil]
     (fn []
       [:div
        [:div
@@ -43,9 +101,9 @@
            }]]
         [:div.form-group 
          [:a 
-          {;;:class 
-           ;;(get-in @app-state [:landing :notify-button-classes])
-           ;;:on-click save-email 
+          {:class 
+           (session/get-in [:landing :notify-button-classes])
+           :on-click save-email 
            :href "#" }
           "Notify Me" ]]]])))
 
@@ -96,8 +154,7 @@
 
 (defn image-thumbnails [images]
   (fn []
-    ;;(let [images (get-in @app-state [:uploaded-images])]
-    (let [images nil]
+    (let [images (session/get-in [:uploaded-images])]
       [:div.row 
        [:div.text-nowrap (map #(identity [:img {:height "100px" :src %}]) images)]])))
 
@@ -132,3 +189,10 @@
    [:div.page-header "Post Convo"] 
    [:div (create-submission-form)]])
 
+(defn toggle-notify-button [activate]
+  (if (true? activate)
+    (session/swap! assoc-in [:landing :notify-button-classes] "btn btn-primary")
+    (session/swap!
+      assoc-in
+      [:landing :notify-button-classes]
+      "btn btn-primary disabled")))
