@@ -4,21 +4,27 @@
             [cljs-http.client :as http]
             [cljs.core.async :refer [<! >! chan put!]]
             [swipefright.validation :as validation]
-            [swipefright.url :as url]
-            ))
+            [swipefright.url :as url])
+  (:require-macros [cljs.core.async.macros :refer [go]]))
 
+(def api-url "http://localhost:4000/api/")
+
+;; Replaced functionality with nil for the time being, consider removing
 (defn validate-email-input [e]
   (let [input (.-target.value e)]
     (session/swap! assoc-in [:landing :notify-email] input)
-    (toggle-notify-button (validation/is-valid-email? input))))
+    nil))
+    ;;(toggle-notify-button (validation/is-valid-email? input))))
 
-;;(defn save-email [email]
-  ;;(go (let [response 
-            ;;(<! (http/post 
-                  ;;(str api-url "emails")
-                  ;;{:with-credentials? false 
-                   ;;:json-params 
-                   ;;{:email {:email (session/get-in [:landing :notify-email])}}}))]
+;; Replaced functionality with nil for the time being, consider removing
+(defn save-email [email]
+  (go (let [response 
+            (<! (http/post 
+                  (str api-url "emails")
+                  {:with-credentials? false
+                   :json-params
+                   {:email {:email (session/get-in [:landing :notify-email])}}}))]
+        nil)))
         ;;(modal/modal! (site/subscribe-confirmed-modal)))))
 
 (defn validate-email-on-enter [event]

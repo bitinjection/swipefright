@@ -18,9 +18,6 @@
     [goog Uri])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(def api-url "http://localhost:4000/api/")
-
-
 (extend-type js/FileList
   ISeqable
   (-seq [array] (array-seq array 0)))

@@ -22,13 +22,58 @@
 
 (defn right-button []
   (fn []
-    [:div {:class (get @app-state :menu-classes)} 
+    [:div {:class (session/get :menu-classes)} 
      [:ul.nav.navbar-nav.ml-auto
       (submit-button)]]))
 
 (defn about-page []
   [:div [:h1 "About swipefright"]
    [:div {:dude "whoa" } [:a {:href "/" :role "button"} "go to the home page"]]])
+
+(defn jumbotron [enter]
+  [:div.container 
+   [:div.jumbotron
+    [:div.lead.col-12.text-center
+     [:h5
+      {:style  {:letter-spacing "2px" :text-transform "uppercase"}} 
+      "The Swipe Rights That Haunt Your Nights" ]]
+    [:br]
+    [:div.row
+     [:div.col-xs-12.col-lg-8.mb-5 {:style {:display "flex" :align-items "center"}}
+      [:div
+       [:h5
+        [:ul {:style {:line-height "2.5em"}}
+         [:li "Shall you drink from the cauldron of cringe?"]
+         [:li "Will you be stifled by the self entitled, or hang from the pickup line twine?"]
+         [:li "Do you dare dig into the darkest depths of online dating discourse?"]
+         [:li "Proceed at your own peril!"]]
+        ]]]
+     [:div.col-md-4.text-center [:img {:src "images/logo.png"}]]
+     [:div.row.col-12
+      [:div.text-center.col-12
+       [:hr.my-4]
+       [:a.btn.btn-primary 
+        {:on-click #(enter) :href "#"}
+        [:i.fa.fa-superpowers {:style {:padding-right "5px"}}]
+        "Enter"]]]]]])
+
+(defn format-post []
+  (let [post-info (session/get :post)]
+    (pr "updating html")
+    [:div.container.text-center
+     [:div.post-title
+      [:h3 (:title post-info)]
+      [:h6 (:caption post-info)]]
+     [:div.post
+      [:img 
+       {:src (str
+               "/images/posts/"
+               (-> post-info
+                   :images
+                   first
+                   :image))
+        :class (:class post-info)}]]]))
+
 
 (defn home-page []
   [:div
@@ -51,7 +96,7 @@
        :src "/images/sflogov2.svg"}]]
     [right-button]]
    (if (= :jumbotron (session/get :jumbotron))
-     (site/jumbotron controllers/random-post)
+     (jumbotron controllers/random-post)
      [format-post])
 
 
@@ -60,10 +105,6 @@
      [:div.text-muted.footer-text
       "This site should not be viewed by users with a history of heart problems."]]]]) 
 
-(defn toggle-class [a k class1 class2]
-  (if (= (@a k) class1)
-    (swap! a assoc k class2)
-    (swap! a assoc k class1)))
 (defn large-icon [name]
   [:div.col-12 [:i.fa.fa-4x {:class name}]])
 
@@ -103,7 +144,7 @@
          [:a 
           {:class 
            (session/get-in [:landing :notify-button-classes])
-           :on-click save-email 
+           :on-click controllers/save-email 
            :href "#" }
           "Notify Me" ]]]])))
 
@@ -124,33 +165,6 @@
   [:div
    (create-modal-header "Summoning")
    (create-modal-body "fa-newspaper-o" "Summoning" (notify-body))])
-
-(defn jumbotron [enter]
-  [:div.container 
-   [:div.jumbotron
-    [:div.lead.col-12.text-center
-     [:h5
-      {:style  {:letter-spacing "2px" :text-transform "uppercase"}} 
-      "The Swipe Rights That Haunt Your Nights" ]]
-    [:br]
-    [:div.row
-     [:div.col-xs-12.col-lg-8.mb-5 {:style {:display "flex" :align-items "center"}}
-      [:div
-       [:h5
-        [:ul {:style {:line-height "2.5em"}}
-         [:li "Shall you drink from the cauldron of cringe?"]
-         [:li "Will you be stifled by the self entitled, or hang from the pickup line twine?"]
-         [:li "Do you dare dig into the darkest depths of online dating discourse?"]
-         [:li "Proceed at your own peril!"]]
-        ]]]
-     [:div.col-md-4.text-center [:img {:src "images/logo.png"}]]
-     [:div.row.col-12
-      [:div.text-center.col-12
-       [:hr.my-4]
-       [:a.btn.btn-primary 
-        {:on-click #(enter) :href "#"}
-        [:i.fa.fa-superpowers {:style {:padding-right "5px"}}]
-        "Enter"]]]]]])
 
 (defn image-thumbnails [images]
   (fn []
