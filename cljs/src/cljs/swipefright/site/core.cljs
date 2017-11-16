@@ -2,6 +2,7 @@
   (:require [reagent-modals.modals :as modal]
             [swipefright.controllers.index :as controllers]
             [reagent.session :as session]
+            [clojure.string :as s]
             [goog.string :as gstring]))
 
 (defn submit-button []
@@ -59,7 +60,6 @@
 
 (defn format-post []
   (let [post-info (session/get :post)]
-    (pr "updating html")
     [:div.container.text-center
      [:div.post-title
       [:h3 (:title post-info)]
@@ -72,7 +72,12 @@
                    :images
                    first
                    :image))
-        :class (:class post-info)}]]]))
+        :class (:class post-info)
+        :on-load (fn [e]
+                   (let [loading-image? (not (s/includes? (-> e .-target .-src) "loading.gif"))]
+                     (if loading-image?
+                       (session/swap! assoc-in [:post :class] "post-image"))
+                     (session/swap! assoc :jumbotron :post)))}]]]))
 
 
 (defn home-page []

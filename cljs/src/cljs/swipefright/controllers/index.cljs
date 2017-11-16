@@ -7,7 +7,7 @@
             [swipefright.url :as url])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(def api-url "http://localhost:4000/api/")
+(def api-url "http://swipefright.net:8880/api/")
 
 ;; Replaced functionality with nil for the time being, consider removing
 (defn validate-email-input [e]
@@ -56,7 +56,7 @@
              {:title (:title json)
               :caption (:caption json)
               :images (:images json)
-              :class "post-image"})
+              :class "post-loading"})
       (assoc :jumbotron :post)))
 
 (defn parse-post [json]
@@ -79,8 +79,7 @@
                           [:body :data :id])]
         
         ;; This line will trigger the relevant routing function call
-        (accountant/navigate! (str "/p/" (url/encode52 id)))
-        ))
+        (accountant/navigate! (str "/p/" (url/encode52 id)))))
   (session/swap!  assoc
                  :post
                  {:title nil
