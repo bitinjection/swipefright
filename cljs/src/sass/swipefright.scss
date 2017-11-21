@@ -74,7 +74,7 @@ hr {
 }
 
 .post {
-	min-height: 700px;
+	min-height: 775px;
 }
 
 @keyframes fadein {
@@ -82,18 +82,28 @@ hr {
 	to {opacity: 1;}
 }
 
+@keyframes brightenfadein {
+	from {opacity: .25;}
+	to {opacity: 1;}
+}
+
 
 .post-image {
-	width: 50%;
-	height: 50%;
 	background: transparent url("/images/posts/loading.gif") no-repeat scroll center center;
+	animation-name: fadein;
+	animation-duration: .25s;
+	width:100%;
+}
+
+.jumbotron {
 	animation-name: fadein;
 	animation-duration: .25s;
 }
 
 .post-loading {
-	margin-top: 150px;
-	width: 10%;
+	margin-top: 50%;
+	margin-left: 37%;
+	width: 25%;
 
 	background: transparent url("/images/posts/loading.gif") no-repeat scroll center center;
 }
@@ -106,4 +116,20 @@ hr {
 
 .footer-text {
 	margin-top: 25px
+}
+
+.faded-arrow {
+	opacity: .25;
+}
+
+.no-arrow {
+	opacity: 0;
+}
+
+#random-right-pane:hover + #random-right-arrow {
+	opacity: 1;
+}
+
+#random-left-pane:hover + #random-left-arrow {
+	opacity: 1;
 }

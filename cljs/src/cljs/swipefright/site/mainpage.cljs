@@ -4,6 +4,7 @@
             [clojure.string :as s]
             [swipefright.site.landing :as landing]
             [swipefright.site.post :as post]
+            [swipefright.site.upload :as upload]
             ))
 
 
@@ -11,7 +12,7 @@
   [:li 
    [:a.btn.btn-secondary.disabled
     [:i.fa.fa-cloud-upload.padded-icon ]
-    "Submit"]])
+    "Upload"]])
 
 
 (defn right-button []
@@ -37,12 +38,15 @@
         "Random"]]]]
     [:a.navbar-brand.mx-auto.w-100.text-center 
      [:img.img-fluid 
-      {:on-click #(session/swap! assoc :jumbotron :jumbotron)
+      {:on-click #(session/swap! assoc :page :jumbotron)
        :src "/images/sflogov2.svg"}]]
     [right-button]]
-   (if (= :jumbotron (session/get :jumbotron))
-     (landing/jumbotron controllers/random-post)
-     [post/format-post])
+   (condp = (session/get :page)
+     :jumbotron (landing/jumbotron controllers/random-post)
+     :post [post/format-post controllers/random-post]
+     :upload [upload/main-page]
+     :else nil
+     )
 
 
    [:footer.footer.text-center

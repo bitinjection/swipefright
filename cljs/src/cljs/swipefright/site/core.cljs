@@ -7,11 +7,6 @@
             [swipefright.site.landing :as landing]
             ))
 
-(defn nav-menus []
-  [:ul.nav.navbar-nav.navbar-right
-   ;;(menu-item "Random" "fa-random")
-   (submit-button)])
-
 (defn toggle-class [a k class1 class2]
   (if (= (@a k) class1)
     (swap! a assoc k class2)

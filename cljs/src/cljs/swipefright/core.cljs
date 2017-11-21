@@ -10,9 +10,11 @@
             [cljsjs.react-transition-group :as transition] 
             [swipefright.url :as url]
             [swipefright.validation :as validation]
-            [swipefright.validation :as validation]
             [swipefright.site.core :as site]
-            [swipefright.controllers.index :as controllers]) 
+            [swipefright.site.mainpage :as main]
+            [swipefright.controllers.index :as controllers]
+            [swipefright.site.upload :as upload]
+            ) 
   (:import
     [goog.history Html5History EventType]
     [goog Uri])
@@ -23,17 +25,17 @@
   (-seq [array] (array-seq array 0)))
 
 (session/reset!  
-  { :jumbotron :jumbotron
+  {:page :jumbotron
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
-   :content 
-   {:body [:div "empty"]} 
+   :content {:body [:div "empty"]} 
    :menu-classes "navbar-collapse text-center collapse"
    :landing 
-   { :notify-email "testerino!" 
+   {:notify-email "testerino!" 
     :notify-button-classes "btn btn-primary disabled" } 
-   :uploaded-images [] })
+   :uploaded-images []})
 
-(def page (atom #'site/home-page))
+
+(def page (atom #'main/home-page))
 
 (defn current-page []
   [:div [@page]
@@ -51,11 +53,16 @@
   (. history (setToken "swipefright" token)))
 
 (secretary/defroute "/" []
-  (reset! page #'site/home-page))
+  (reset! page #'main/home-page))
+
+(secretary/defroute "/upload" []
+  (reset! page #'upload/main-page))
 
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]
   (controllers/fetch-post id))
+
+(secretary/dispatch! "/")
 
 ;; -------------------------
 ;; Initialize app

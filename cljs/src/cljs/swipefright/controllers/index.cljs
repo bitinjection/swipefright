@@ -57,7 +57,7 @@
               :caption (:caption json)
               :images (:images json)
               :class "post-loading"})
-      (assoc :jumbotron :post)))
+      (assoc :page :post)))
 
 (defn parse-post [json]
   (let [parsed (get-in json [:body :data])]
