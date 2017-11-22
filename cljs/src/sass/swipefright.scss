@@ -126,10 +126,8 @@ hr {
 	opacity: 0;
 }
 
-#random-right-pane:hover + #random-right-arrow {
-	opacity: 1;
-}
-
-#random-left-pane:hover + #random-left-arrow {
+#random-right-pane:hover + #random-right-arrow,
+#random-left-pane:hover + #random-left-arrow,
+.faded-arrow:hover {
 	opacity: 1;
 }
