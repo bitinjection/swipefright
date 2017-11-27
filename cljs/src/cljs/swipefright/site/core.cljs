@@ -4,8 +4,7 @@
             [reagent.session :as session]
             [clojure.string :as s]
             [goog.string :as gstring]
-            [swipefright.site.landing :as landing]
-            ))
+            [swipefright.site.landing :as landing]))
 
 (defn toggle-class [a k class1 class2]
   (if (= (@a k) class1)
@@ -83,33 +82,15 @@
       [:div.row 
        [:div.text-nowrap (map #(identity [:img {:height "100px" :src %}]) images)]])))
 
-(defn create-submission-form []
-  [:form
-   [:div.form-group
-    [:h6 "Title: "]
-    [:input {:type "text" :placeholder "Spooky Title"}]]
-   [:div.form-group
-    [:h6 "Images: "]
-    [:div {:style 
-           {:height "100px" :background-color "#333333" :overflow "scroll-x"}} 
-     [image-thumbnails]]]
-   [:div.form-group
-    [:label.btn.btn-primary.btn-file 
-     [:i.fa.fa-superpowers {:style {:padding-right "5px"} }] 
-     "Upload" 
-     [:input.form-control-file 
-      {:style {:display "none"} 
-       :type "file" 
-       ;;:on-change upload-queued
-       }]]]])
 
 
-(defn submit-image-modal []
+
+#_(defn submit-image-modal []
   [:div
    (create-modal-header "Post Convo")
    (create-submission-form)])
 
-(defn upload-page []
+#_(defn upload-page []
   [:div.container.jumbotron 
    [:div.page-header "Post Convo"] 
    [:div (create-submission-form)]])

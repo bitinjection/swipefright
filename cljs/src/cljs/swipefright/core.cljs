@@ -28,10 +28,7 @@
   {:page :jumbotron
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
    :content {:body [:div "empty"]} 
-   :menu-classes "navbar-collapse text-center collapse"
-   :landing 
-   {:notify-email "testerino!" 
-    :notify-button-classes "btn btn-primary disabled" } 
+   :landing {:notify-email "testerino!" :notify-button-classes "btn btn-primary disabled" } 
    :uploaded-images []})
 
 
@@ -53,10 +50,10 @@
   (. history (setToken "swipefright" token)))
 
 (secretary/defroute "/" []
-  (reset! page #'main/home-page))
+  (session/swap! assoc :page :jumbotron))
 
 (secretary/defroute "/upload" []
-  (reset! page #'upload/main-page))
+  (session/swap! assoc :page :upload))
 
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]

@@ -2,24 +2,25 @@
   (:require [swipefright.controllers.index :as controllers]
             [reagent.session :as session]
             [clojure.string :as s]
+            [accountant.core :as accountant]
             [swipefright.site.landing :as landing]
             [swipefright.site.post :as post]
-            [swipefright.site.upload :as upload]
-            ))
+            [swipefright.site.upload :as upload]))
 
 
 (defn submit-button []
   [:li 
-   [:a.btn.btn-secondary.disabled
-    [:i.fa.fa-cloud-upload.padded-icon ]
+   [:a.btn.btn-secondary
+    {:on-click #(accountant/navigate! "/upload")}
+    [:i.fa.fa-cloud-upload.padded-icon]
     "Upload"]])
 
 
 (defn right-button []
   (fn []
-    [:div {:class (session/get :menu-classes)} 
+    [:div.navbar-collapse.text-center.collapse.m-5
      [:ul.nav.navbar-nav.ml-auto
-      (submit-button)]]))
+      [submit-button]]]))
 
 (defn home-page []
   [:div
@@ -27,7 +28,7 @@
     [:button.navbar-toggler.navbar-toggler-right
      {:type "button", :data-toggle "collapse", :data-target ".navbar-collapse" }
      [:i.fa.fa-bars]]
-    [:div.navbar-collapse.collapse 
+    [:div.navbar-collapse.collapse.m-5
      [:ul.nav.navbar-nav
       [:li.text-center 
        [:a.btn.btn-secondary
@@ -38,11 +39,11 @@
         "Random"]]]]
     [:a.navbar-brand.mx-auto.w-100.text-center 
      [:img.img-fluid 
-      {:on-click #(session/swap! assoc :page :jumbotron)
+      {:on-click #(accountant/navigate! "/")
        :src "/images/sflogov2.svg"}]]
     [right-button]]
    (condp = (session/get :page)
-     :jumbotron (landing/jumbotron controllers/random-post)
+     :jumbotron [landing/jumbotron controllers/random-post]
      :post [post/format-post controllers/random-post]
      :upload [upload/main-page]
      :else nil

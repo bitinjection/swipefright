@@ -7,7 +7,7 @@
             [swipefright.url :as url])
   (:require-macros [cljs.core.async.macros :refer [go]]))
 
-(def api-url "https://swipefright.net:8443/api/")
+(def api-url "https://swipefright.com:8443/api/")
 
 ;; Replaced functionality with nil for the time being, consider removing
 (defn validate-email-input [e]

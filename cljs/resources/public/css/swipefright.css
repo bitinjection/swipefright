@@ -86,6 +86,9 @@ hr {
   margin-bottom: 25px;
   min-height: 100px; }
 
+.post-container {
+  position: relative; }
+
 .footer-text {
   margin-top: 25px; }
 
@@ -94,6 +97,19 @@ hr {
 
 .no-arrow {
   opacity: 0; }
+
+.random-pane, #random-left-pane, #random-right-pane {
+  position: absolute;
+  top: 0px;
+  height: 100%; }
+
+#random-left-pane {
+  left: 0px;
+  width: 33%; }
+
+#random-right-pane {
+  right: 0px;
+  width: 66%; }
 
 #random-right-pane:hover + #random-right-arrow,
 #random-left-pane:hover + #random-left-arrow,

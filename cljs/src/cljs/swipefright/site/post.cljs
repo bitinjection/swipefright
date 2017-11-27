@@ -12,12 +12,13 @@
       (let [post-info (session/get :post)]
         [:div
          [:div.d-flex.justify-content-center
-          [:div.post-title
+          [:div.post-title.text-center
            [:h3 (:title post-info)]
            [:h6 (:caption post-info)]]]
-         [:div.d-flex.flex-row.justify-content-center.post
-          [:div.d-flex {:style {:position "relative" :min-width "325px" :width "25%"}}
-           [:div#random-left-pane {:on-click #(do (if (> @posts 0) (do (swap! posts dec) (js/window.history.back))) js/window.history.back) :style {:position "absolute" :top "0px" :left "0px" :height "100%" :width "50%"}}]
+         [:div.d-flex.flex-row.justify-content-center.post.p-2
+          [:div.d-flex.post-container.col-xl-4
+           [:div#random-left-pane
+            {:on-click #(do (if (> @posts 0) (do (swap! posts dec) (js/window.history.back))) js/window.history.back)}]
            [:div#random-left-arrow.d-flex.align-items-center.p-2 {:class @back-arrow-class } [:h2 "<"]]
            [:div.p-2 
             [:img 
@@ -33,6 +34,5 @@
                            (if loading-image?
                              (session/swap! assoc-in [:post :class] "post-image"))
                            (session/swap! assoc :page :post)))}]]
-           [:div#random-right-pane {:on-click #(do (swap! posts inc) (random-post)) :style {:position "absolute" :top "0px" :left "50%" :height "100%" :width "50%"}}]
-           [:div#random-right-arrow.d-flex.align-items-center.p-2.faded-arrow [:h2 ">"]]]
-          ]]))))
+           [:div#random-right-pane {:on-click #(do (swap! posts inc) (random-post))}]
+           [:div#random-right-arrow.d-flex.align-items-center.p-2.faded-arrow [:h2 ">"]]]]]))))
