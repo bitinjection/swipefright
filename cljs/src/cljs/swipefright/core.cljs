@@ -24,7 +24,8 @@
   ISeqable
   (-seq [array] (array-seq array 0)))
 
-(session/reset!  
+
+#_(session/reset!  
   {:page :jumbotron
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
    :content {:body [:div "empty"]} 
@@ -32,7 +33,8 @@
    :uploaded-images []})
 
 
-(def page (atom #'main/home-page))
+
+(defonce page (atom #'main/home-page))
 
 (defn current-page []
   [:div [@page]
@@ -58,8 +60,6 @@
 ;; Routes like these need to be setup in on the backend
 (secretary/defroute "/p/:id" [id]
   (controllers/fetch-post id))
-
-(secretary/dispatch! "/")
 
 ;; -------------------------
 ;; Initialize app

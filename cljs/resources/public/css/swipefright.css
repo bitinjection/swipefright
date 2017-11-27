@@ -4,28 +4,28 @@
 .padded-icon {
   padding-right: 5px; }
 
-a.btn-primary {
+.btn-primary {
   background-color: #A08600;
   border-color: #A08600;
   color: black; }
-  a.btn-primary:hover {
+  .btn-primary:hover {
     border-color: #d9bb26;
     background-color: #d9bb26;
     color: white; }
-  a.btn-primary.disabled {
+  .btn-primary.disabled {
     border-color: #6d6758;
     background-color: #6d6758;
     color: white; }
 
-a.btn-secondary {
+.btn-secondary {
   background-color: black;
   border-color: #A08600;
   color: #A08600; }
-  a.btn-secondary:hover {
+  .btn-secondary:hover {
     border-color: #A08600;
     background-color: #6d6758;
     color: #d9bb26; }
-  a.btn-secondary.disabled {
+  .btn-secondary.disabled {
     border-color: #6d6758;
     background-color: black;
     color: #6d6758; }
@@ -115,5 +115,12 @@ hr {
 #random-left-pane:hover + #random-left-arrow,
 .faded-arrow:hover {
   opacity: 1; }
+
+.form-group > .control-label:after {
+  content: "*";
+  color: #FF0000; }
+
+.control-label {
+  font-weight: bold; }
 
 /*# sourceMappingURL=swipefright.css.map */

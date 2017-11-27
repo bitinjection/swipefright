@@ -13,7 +13,7 @@ $bright-gold: #d9bb26;
 	padding-right: 5px;
 }
 
-a.btn-primary {
+.btn-primary {
 	background-color: $gold;
 	border-color: $gold;
 	color: $background;
@@ -28,7 +28,7 @@ a.btn-primary {
 		color: white;
 	}
 }
-a.btn-secondary {
+.btn-secondary {
 	background-color: $background;
 	border-color: $gold;
 	color: $gold;
@@ -153,4 +153,13 @@ hr {
 #random-left-pane:hover + #random-left-arrow,
 .faded-arrow:hover {
 	opacity: 1;
+}
+
+.form-group > .control-label:after {
+	content: "*";
+	color: #FF0000;
+}
+
+.control-label {
+	font-weight: bold;
 }
