@@ -24,7 +24,7 @@
 
 (defn home-page []
   [:div
-   [:nav.navbar.navbar-expand-sm.navbar-dark {:id "topNav"}
+   [:nav#topNav.navbar.navbar-expand-sm.navbar-dark
     [:button.navbar-toggler.navbar-toggler-right
      {:type "button", :data-toggle "collapse", :data-target ".navbar-collapse" }
      [:i.fa.fa-bars]]

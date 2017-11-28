@@ -27,6 +27,7 @@
 
 #_(session/reset!  
   {:page :jumbotron
+   :selected-image nil
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
    :content {:body [:div "empty"]} 
    :landing {:notify-email "testerino!" :notify-button-classes "btn btn-primary disabled" } 
@@ -57,7 +58,7 @@
 (secretary/defroute "/upload" []
   (session/swap! assoc :page :upload))
 
-;; Routes like these need to be setup in on the backend
+;; Routes like these need to be set up in on the backend
 (secretary/defroute "/p/:id" [id]
   (controllers/fetch-post id))
 

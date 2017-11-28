@@ -11,12 +11,12 @@
     (fn [random-post]
       (let [post-info (session/get :post)]
         [:div
-         [:div.d-flex.justify-content-center
-          [:div.post-title.text-center
+         [:div.d-flex.justify-content-center.mx-auto
+          [:div.post-title.text-center.col-xs-10.col-lg-4.content-background.p-4
            [:h3 (:title post-info)]
            [:h6 (:caption post-info)]]]
          [:div.d-flex.flex-row.justify-content-center.post.p-2
-          [:div.d-flex.post-container.col-xl-4
+          [:div.d-flex.post-container.col-xl-4.content-background
            [:div#random-left-pane
             {:on-click #(do (if (> @posts 0) (do (swap! posts dec) (js/window.history.back))) js/window.history.back)}]
            [:div#random-left-arrow.d-flex.align-items-center.p-2 {:class @back-arrow-class } [:h2 "<"]]

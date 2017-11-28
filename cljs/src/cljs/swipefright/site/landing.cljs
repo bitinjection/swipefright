@@ -2,7 +2,7 @@
 
 (defn jumbotron [enter]
   [:div.container 
-   [:div.jumbotron
+   [:div.jumbotron.content-background.mt-5
     [:div.lead.col-12.text-center
      [:h5
       {:style  {:letter-spacing "2px" :text-transform "uppercase"}} 

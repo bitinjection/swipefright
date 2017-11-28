@@ -3,6 +3,7 @@ $faded-gold: #7b6c24;
 //$dark-gold: #2b2508;
 $dark-gold: #6d6758;
 $background: black;
+$darkest-gold: #020200;
 $bright-gold: #d9bb26;
 
 .lead {
@@ -34,7 +35,7 @@ $bright-gold: #d9bb26;
 	color: $gold;
 	&:hover {
 		border-color: $gold;
-		background-color: $dark-gold;
+		background-color: #0C0A00;
 		color: $bright-gold;
 	}
 	&.disabled {
@@ -53,8 +54,19 @@ hr {
 	border-top-color: #aaa;
 }
 
-.jumbotron {
-	background-color: $background;
+nav#topNav { 
+	background-color: $darkest-gold;
+	border-width: 0px 0px 1px 0px;
+	border-color: $gold;
+	border-style: solid;
+}
+
+.content-background {
+	background-color: $darkest-gold;
+	border-color: $gold;
+	border-style: solid;
+	border-width: 1px;
+	border-radius:4px;
 }
 
 .bg-primary {
@@ -155,11 +167,37 @@ hr {
 	opacity: 1;
 }
 
-.form-group > .control-label:after {
+.required:after {
 	content: "*";
 	color: #FF0000;
 }
 
 .control-label {
 	font-weight: bold;
+}
+
+.image-upload-area {
+	min-height:300px;
+}
+
+.image-upload-button {
+	border-style: dashed;
+	border-color: $gold;
+	border-radius: 2px;
+	font-size: 40px;
+	height: 300px;
+
+	animation-name: fadein;
+	animation-duration: .25s;
+}
+
+.vertical-center {
+  display: flex;
+  align-items: center;
+}
+
+.uploaded-image {
+	animation-name: fadein;
+	animation-duration: .25s;
+	width: 100%
 }
