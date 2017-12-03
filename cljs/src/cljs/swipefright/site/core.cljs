@@ -1,6 +1,5 @@
 (ns swipefright.site.core
-  (:require [reagent-modals.modals :as modal]
-            [swipefright.controllers.index :as controllers]
+  (:require [swipefright.controllers.index :as controllers]
             [reagent.session :as session]
             [clojure.string :as s]
             [goog.string :as gstring]

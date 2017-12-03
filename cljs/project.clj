@@ -18,10 +18,11 @@
                  [org.clojure/clojurescript "1.9.908"]
                  [secretary "1.2.3"]
                  [cljs-http "0.1.43"]
-                 [org.clojars.frozenlock/reagent-modals "0.2.6"]
                  [org.clojure/clojure "1.9.0-alpha16"]
                  [org.clojure/core.match "0.3.0-alpha5"]
+                 [org.clojars.frozenlock/reagent-modals "0.2.6"]
                  [org.clojure/test.check "0.10.0-alpha2"]
+                 [funcool/cats "2.1.0"]
                  [venantius/accountant "0.2.0"
                   :exclusions [org.clojure/tools.reader]]]
 

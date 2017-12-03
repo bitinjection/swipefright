@@ -4,8 +4,8 @@
             [secretary.core :as secretary :include-macros true]
             [accountant.core :as accountant]
             [cljs-http.client :as http]
-            [reagent-modals.modals :as modal] 
             [cljs.core.async :refer [<! >! chan put!]]
+            [reagent-modals.modals :as modal]
             [goog.string :as gstring]
             [cljsjs.react-transition-group :as transition] 
             [swipefright.url :as url]
@@ -39,7 +39,7 @@
 
 (defn current-page []
   [:div [@page]
-  [modal/modal-window]])
+   [modal/modal-window]])
 
 ;; -------------------------
 ;; Routes

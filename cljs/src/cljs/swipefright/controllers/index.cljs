@@ -25,7 +25,6 @@
                    :json-params
                    {:email {:email (session/get-in [:landing :notify-email])}}}))]
         nil)))
-        ;;(modal/modal! (site/subscribe-confirmed-modal)))))
 
 (defn validate-email-on-enter [event]
   (let [code (.-charCode event)]
