@@ -29,9 +29,12 @@
      :reagent-render (fn [] [:div.g-recaptcha {:data-sitekey "6LcPszoUAAAAAO1xLORatfVrSUVPvpgFpPxdiv7H"}])}))
 
 (defn post-image [data] 
+  (pr (str "title is ") (:title @data))
   (go
-    (let [response
-          (<! (http/post "http://localhost:8443/api/pendingpost"))] (pr response)) nil))
+    (let [request {"pending_post"  {:title (:title @data) :caption (:caption @data) :image "unused" :content (:image @data)}}
+          response
+          (<! (http/post "http://localhost:4000/api/pending" {:with-credentials? false
+                                                              :json-params request}))] (pr response)) nil))
 
 (defn update-inputs [inputs k]
   (partial swap! inputs assoc k))
@@ -45,7 +48,7 @@
      :type "file"}]]) 
 
 (defn rendered-image [inputs]
-  (fn [inputes]
+  (fn [inputs]
     [:img.uploaded-image.text-center.mx-auto 
      {:src (:image @inputs)
       :on-click #(swap! inputs assoc :image nil)}]))

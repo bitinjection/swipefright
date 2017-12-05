@@ -256,4 +256,68 @@ defmodule Api.ContentTest do
       assert %Ecto.Changeset{} = Content.change_image(image)
     end
   end
+
+  describe "pending" do
+    alias Api.Content.PendingPost
+
+    @valid_attrs %{caption: "some caption", image: "some image", title: "some title"}
+    @update_attrs %{caption: "some updated caption", image: "some updated image", title: "some updated title"}
+    @invalid_attrs %{caption: nil, image: nil, title: nil}
+
+    def pending_post_fixture(attrs \\ %{}) do
+      {:ok, pending_post} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Content.create_pending_post()
+
+      pending_post
+    end
+
+    test "list_pending/0 returns all pending" do
+      pending_post = pending_post_fixture()
+      assert Content.list_pending() == [pending_post]
+    end
+
+    test "get_pending_post!/1 returns the pending_post with given id" do
+      pending_post = pending_post_fixture()
+      assert Content.get_pending_post!(pending_post.id) == pending_post
+    end
+
+    test "create_pending_post/1 with valid data creates a pending_post" do
+      assert {:ok, %PendingPost{} = pending_post} = Content.create_pending_post(@valid_attrs)
+      assert pending_post.caption == "some caption"
+      assert pending_post.image == "some image"
+      assert pending_post.title == "some title"
+    end
+
+    test "create_pending_post/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Content.create_pending_post(@invalid_attrs)
+    end
+
+    test "update_pending_post/2 with valid data updates the pending_post" do
+      pending_post = pending_post_fixture()
+      assert {:ok, pending_post} = Content.update_pending_post(pending_post, @update_attrs)
+      assert %PendingPost{} = pending_post
+      assert pending_post.caption == "some updated caption"
+      assert pending_post.image == "some updated image"
+      assert pending_post.title == "some updated title"
+    end
+
+    test "update_pending_post/2 with invalid data returns error changeset" do
+      pending_post = pending_post_fixture()
+      assert {:error, %Ecto.Changeset{}} = Content.update_pending_post(pending_post, @invalid_attrs)
+      assert pending_post == Content.get_pending_post!(pending_post.id)
+    end
+
+    test "delete_pending_post/1 deletes the pending_post" do
+      pending_post = pending_post_fixture()
+      assert {:ok, %PendingPost{}} = Content.delete_pending_post(pending_post)
+      assert_raise Ecto.NoResultsError, fn -> Content.get_pending_post!(pending_post.id) end
+    end
+
+    test "change_pending_post/1 returns a pending_post changeset" do
+      pending_post = pending_post_fixture()
+      assert %Ecto.Changeset{} = Content.change_pending_post(pending_post)
+    end
+  end
 end

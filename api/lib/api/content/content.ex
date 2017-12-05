@@ -213,4 +213,100 @@ Examples
   def change_image(%Image{} = image) do
     Image.changeset(image, %{})
   end
+
+  alias Api.Content.PendingPost
+
+  @doc """
+  Returns the list of pending.
+
+  ## Examples
+
+      iex> list_pending()
+      [%PendingPost{}, ...]
+
+  """
+  def list_pending do
+    Repo.all(PendingPost)
+  end
+
+  @doc """
+  Gets a single pending_post.
+
+  Raises `Ecto.NoResultsError` if the Pending post does not exist.
+
+  ## Examples
+
+      iex> get_pending_post!(123)
+      %PendingPost{}
+
+      iex> get_pending_post!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_pending_post!(id), do: Repo.get!(PendingPost, id)
+
+  @doc """
+  Creates a pending_post.
+
+  ## Examples
+
+      iex> create_pending_post(%{field: value})
+      {:ok, %PendingPost{}}
+
+      iex> create_pending_post(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_pending_post(attrs \\ %{}) do
+    %PendingPost{}
+    |> PendingPost.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a pending_post.
+
+  ## Examples
+
+      iex> update_pending_post(pending_post, %{field: new_value})
+      {:ok, %PendingPost{}}
+
+      iex> update_pending_post(pending_post, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_pending_post(%PendingPost{} = pending_post, attrs) do
+    pending_post
+    |> PendingPost.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a PendingPost.
+
+  ## Examples
+
+      iex> delete_pending_post(pending_post)
+      {:ok, %PendingPost{}}
+
+      iex> delete_pending_post(pending_post)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_pending_post(%PendingPost{} = pending_post) do
+    Repo.delete(pending_post)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking pending_post changes.
+
+  ## Examples
+
+      iex> change_pending_post(pending_post)
+      %Ecto.Changeset{source: %PendingPost{}}
+
+  """
+  def change_pending_post(%PendingPost{} = pending_post) do
+    PendingPost.changeset(pending_post, %{})
+  end
 end
