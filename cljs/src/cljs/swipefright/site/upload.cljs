@@ -29,12 +29,15 @@
      :reagent-render (fn [] [:div.g-recaptcha {:data-sitekey "6LcPszoUAAAAAO1xLORatfVrSUVPvpgFpPxdiv7H"}])}))
 
 (defn post-image [data] 
-  (pr (str "title is ") (:title @data))
   (go
-    (let [request {"pending_post"  {:title (:title @data) :caption (:caption @data) :image "unused" :content (:image @data)}}
-          response
-          (<! (http/post "http://localhost:4000/api/pending" {:with-credentials? false
-                                                              :json-params request}))] (pr response)) nil))
+    (let [ request {"pending_post" @data}
+          response (<! (http/post
+                         "https://swipefright.org:8443/api/pending"
+                         {:with-credentials? false
+                         :json-params request}))]
+      (if (= (:status response) 201)
+        (session/swap! assoc :upload-page :upload-success)
+        (session/swap! assoc :upload-page :upload-failure)))))
 
 (defn update-inputs [inputs k]
   (partial swap! inputs assoc k))
@@ -74,8 +77,8 @@
      [:i.fa.fa-superpowers {:style {:padding-right "5px"} }] 
      "Upload"]))
 
-(defn create-submission-form []
-  (let [inputs (r/atom {:title nil :caption nil :image nil :valid "disabled"}) ]
+(defn create-submission-form [page] 
+  (let [inputs (r/atom {:title nil :caption nil :image nil :valid "disabled"})]
     [:form.mt-5.upload-form.content-background.p-5
      [:div.form-group
       [text-input "Title" "Title of spooky post" true (update-inputs inputs :title)]
@@ -86,5 +89,16 @@
        [recaptcha]
        [upload-button (partial post-image inputs) inputs]]]]))
 
+(defn upload-success []
+  [:div "Upload success!"])
+
+(defn upload-failure []
+  [:div.mt-5.content-background [:h2.text-center "Error"]
+         "Unable to process upload."])
+
 (defn main-page []
-  [:div.col-xs-12.col-lg-5.container [create-submission-form]])
+  [:div.col-xs-12.col-lg-5.container
+   (condp = (session/get :upload-page)
+         :upload [create-submission-form]
+         :upload-success [upload-success]
+         :upload-failure [upload-failure])])

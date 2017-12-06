@@ -15,31 +15,38 @@ defmodule ApiWeb.PendingPostController do
     Regex.named_captures(~r/data:image\/(?<format>.*);.*,(?<content>.*)/,s)
   end
 
-  def decode(request) do
-    filename = Ecto.UUID.generate <> "." <> Map.get(request, "format")
-    base64 = Map.get(request, "content")
-    %{:filename => filename, :content => Base.decode64!(base64)}
+  def decode(%{"format" => format, "content" => content}, base_filename) do
+    filename = base_filename <> "." <> format
+    %{:filename => filename, :content => Base.decode64!(content)}
   end
 
-  def write(file) do
+  def write(file, path) do
     {:ok, filename} = Map.fetch(file, :filename)
     {:ok, content} = Map.fetch(file, :content)
+    full_filename = path <> filename
 
-    tempfile = filename
-
-    {:ok, outfile} = File.open tempfile, [:write]
+    {:ok, outfile} = File.open full_filename, [:write]
     IO.binwrite outfile, content
     File.close outfile
+    filename
+  end
+
+  def save_file(path) do
   end
 
   def create(conn, %{"pending_post" => pending_post_params}) do
-    pending_post_params
-      |> Map.fetch("content")
-      |> parse
-      |> decode
-      |> write
+    base_filename = Ecto.UUID.generate 
 
-    with {:ok, %PendingPost{} = pending_post} <- Content.create_pending_post(pending_post_params) do
+    written_filename = pending_post_params
+      |> Map.fetch("image")
+      |> parse
+      |> decode(base_filename)
+      |> write("/images/pending/")
+
+    {_, formatted_post} = Map.get_and_update(pending_post_params,
+                                        "image", fn current -> {current, written_filename} end)
+
+    with {:ok, %PendingPost{} = pending_post} <- Content.create_pending_post(formatted_post) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", pending_post_path(conn, :show, pending_post))

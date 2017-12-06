@@ -31,7 +31,8 @@
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
    :content {:body [:div "empty"]} 
    :landing {:notify-email "testerino!" :notify-button-classes "btn btn-primary disabled" } 
-   :uploaded-images []})
+   :uploaded-images []
+   :upload-page :upload})
 
 
 
@@ -56,7 +57,8 @@
   (session/swap! assoc :page :jumbotron))
 
 (secretary/defroute "/upload" []
-  (session/swap! assoc :page :upload))
+  (do (session/swap! assoc :page :upload)
+      (session/swap! assoc :upload-page :upload)))
 
 ;; Routes like these need to be set up in on the backend
 (secretary/defroute "/p/:id" [id]
