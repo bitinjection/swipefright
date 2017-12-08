@@ -33,8 +33,7 @@
       [:li.text-center 
        [:a.btn.btn-secondary
         {:href "#"
-         :on-click #(controllers/random-post)
-         } 
+         :on-click #(controllers/random-post)} 
         [:i.padded-icon.fa.fa-random]
         "Random"]]]]
     [:a.navbar-brand.mx-auto.w-100.text-center 

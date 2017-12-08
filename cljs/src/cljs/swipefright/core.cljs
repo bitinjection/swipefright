@@ -25,7 +25,7 @@
   (-seq [array] (array-seq array 0)))
 
 
-#_(session/reset!  
+(session/reset!  
   {:page :jumbotron
    :selected-image nil
    :post {:title "Loading..." :caption nil :images nil :class "post-loading"}
@@ -62,7 +62,8 @@
 
 ;; Routes like these need to be set up in on the backend
 (secretary/defroute "/p/:id" [id]
-  (controllers/fetch-post id))
+  (controllers/fetch-post id)
+  )
 
 ;; -------------------------
 ;; Initialize app

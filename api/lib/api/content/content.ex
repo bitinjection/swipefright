@@ -309,4 +309,10 @@ Examples
   def change_pending_post(%PendingPost{} = pending_post) do
     PendingPost.changeset(pending_post, %{})
   end
+
+  def create_both(title, caption, filename) do
+    {:ok, post} = Api.Content.create_post(%{title: title, caption: caption})
+    Api.Content.create_image(%{image: filename, post_id: post.id)
+  end
+ 
 end

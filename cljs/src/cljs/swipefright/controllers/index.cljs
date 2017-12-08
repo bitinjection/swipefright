@@ -68,7 +68,9 @@
                                    {:with-credentials? false}))
           json (js->clj response)]
       (if (:success json)
-        (parse-post json))))
+        (parse-post json)
+        (pr "couldn't load post")
+        )))
   nil)
 
 (defn random-post []

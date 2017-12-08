@@ -17,6 +17,6 @@ defmodule Api.Content.Post do
   def changeset(%Post{} = post, attrs) do
     post
     |> cast(attrs, [:title, :caption])
-    |> validate_required([:title, :caption])
+    |> validate_required([:title])
   end
 end

@@ -90,11 +90,19 @@
        [upload-button (partial post-image inputs) inputs]]]]))
 
 (defn upload-success []
-  [:div "Upload success!"])
+  [:div.mt-5.content-background.upload-success
+   [:div.mt-2.mb-5 [:h2.text-center "Success!"]]
+   [:div.m-4
+    [:div.mb-4 "Thanks for your submission."]
+    [:div.mb-2 (str "We currently manually review submissions, "
+                    "so it may take some time before post goes up.")]]])
 
 (defn upload-failure []
-  [:div.mt-5.content-background [:h2.text-center "Error"]
-         "Unable to process upload."])
+  [:div.mt-5.content-background.upload-error
+   [:div.mt-2.mb-5 [:h2.text-center "Error"]]
+   [:div.m-4
+    [:div.mb-4 "There was an error processing your request.  Please try again later."]
+    [:div.mb-2 "If the error continues, then, well, I don't know."]]])
 
 (defn main-page []
   [:div.col-xs-12.col-lg-5.container

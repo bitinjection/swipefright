@@ -15,7 +15,7 @@ defmodule Api.Content.Image do
   @doc false
   def changeset(%Image{} = image, attrs) do
     image
-    |> cast(attrs, [:image, :thumbnail, :sequence])
-    |> validate_required([:image, :thumbnail, :sequence])
+    |> cast(attrs, [:image, :thumbnail, :sequence, :post_id])
+    |> validate_required([:image, :post_id])
   end
 end
